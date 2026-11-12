@@ -1,4 +1,4 @@
-bakery import assert_equal
+##from bakery import assert_equal
 from drafter import *
 from dataclasses import dataclass
 
@@ -40,7 +40,7 @@ class Processing:
     DESunit:str
     
 @dataclass
-class Output:
+class Out:
     OUTvalue:int
     OUTunit:str
     
@@ -49,14 +49,15 @@ def Input_Type(types:Type):
     return Page(Type(types.MEStype, types.MESfound), [
                 Header("Unit Converter"),
                 "Type of Measurement(Temperature, Pressure, Force, Mass, Time, Distance, Speed):",
-                TextBox("input type", state.MEStype)
+                TextBox("input type", types.MEStype),
                 Button("Next","Found_type")
                 ])
 
 @route
 def Found_type(types:Type):
     measurement = types.MEStype
-    value = measurement.lowercase() + ".txt"
+    measurement = measurement.lower()
+    value = measurement + ".txt"
     if value == "temperature.txt" or value == "time.txt" or value == "force.txt" or value == "speed.txt" or value == "distance.txt" or value == "mass.txt" or value == "pressure.txt":
         types.MESfound = True
         return Page([Header("Unit Converter"),
@@ -72,28 +73,28 @@ def Found_type(types:Type):
     
 @route
 def Input_Values(inputs:Input):
-    return Page(Input(inputs.INvalue, inputs.INunit), [
+    return Page(Input(inputs.INvalue, inputs.INunit,inputs.UNITfound), [
                 Header("Unit Converter"),
                 "Measurement:",
-                TextBox("input value",state.INvalue),
+                TextBox("input value",inputs.INvalue),
                 "Unit:",
-                TextBox("input unit", state.INunit)
+                TextBox("input unit", inputs.INunit),
                 Button("Next","Found_Input")
                 ])
 
 @route
 def Found_Input(inputs:Input):
-    Unit = inputs.INunit
     
-    if Unit
     return Page([
                 Header("Unit Converter"),
                 "Measurement:",
-                TextBox("input value",state.INvalue),
+                TextBox("input value",inputs.INvalue),
                 "Unit:",
-                TextBox("input unit", state.INunit)
+                TextBox("input unit", inputs.INunit),
                 Button("Next","Found_Input")
                 ])
                 
 
-start_server(Type("",False),Input(0,"",""),Processing(0,""),Output(0,""))
+
+start_server(Type("",False),Input(0,"",""),Processing(0,""),Out(0,""))
+
