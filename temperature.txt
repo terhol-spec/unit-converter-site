@@ -1,0 +1,6 @@
+celsius/((value * 9/5) + 32)/fahrenheit 
+fahrenheit/((value - 32) *5/9)/celsius 
+celsius/(value + 273.15)/kelvin 
+kelvin/(value - 273.15)/celsius 
+fahrenheit/((value - 32) * 5/9 + 273.15)/kelvin 
+kelvin/((value - 273.15) * 9/5 + 32)/fahrenheit

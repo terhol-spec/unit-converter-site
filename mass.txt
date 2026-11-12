@@ -1,0 +1,7 @@
+milligram/0.001/gram 
+gram/0.001/kilogram 
+kilogram/1000/gram
+metric_ton/1000/kilogram 
+ounce/28.349523125/gram 
+pound/0.45359237/kilogram 
+pound/16/ounce

@@ -1,0 +1,6 @@
+millinewton/0.001/newton 
+kilonewton/1000/newton 
+newton/1000/millinewton 
+dyne/0.00001/newton 
+pound_force/4.448221615/newton
+kilogram_force/9.80665/newton

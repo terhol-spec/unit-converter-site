@@ -1,0 +1,6 @@
+meter_per_second/3.6/kilometer_per_hour 
+kilometer_per_hour/0.2777777778/meter_per_second 
+mile_per_hour/1.609344/kilometer_per_hour 
+kilometer_per_hour/0.6213711922/mile_per_hour
+foot_per_second/0.3048/meter_per_second 
+knot/1.852/kilometer_per_hour
