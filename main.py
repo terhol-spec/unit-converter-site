@@ -1,4 +1,4 @@
-
+##from bakery import assert_equal
 from drafter import *
 from dataclasses import dataclass
 
@@ -22,14 +22,6 @@ time = open("time.txt")
 
 pressure = open("pressure.txt")
 
-
-@dataclass
-class State:
-    types:Type
-    inputs:In
-    process:Processing
-    Output:Out
-
 @dataclass
 class Type:
     MEStype:str
@@ -51,6 +43,13 @@ class Out:
     OUTvalue:int
     OUTunit:str
     
+@dataclass
+class State:
+    types:Type
+    inputs:In
+    process:Processing
+    Output:Out
+
 def search_temperature(unit:str):
     for temp in temperature:
         if unit in temp.strip():
