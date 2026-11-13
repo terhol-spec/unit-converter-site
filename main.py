@@ -207,7 +207,7 @@ def Convert_value(num1:int,num2:int,measurement:str,unit1:str,unit2:str):
         return False
     
 @route
-def Input_Type(state:State):
+def Input_Type(state:State)-> Page:
     return Page((State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)), [
                 Header("Unit Converter"),
                 "Type of Measurement(Temperature, Pressure, Force, Mass, Time, Distance, Speed):",
@@ -216,28 +216,28 @@ def Input_Type(state:State):
                 ]))
 
 @route
-def Found_type(state:State):
+def Found_type(state:State)-> Page:
     measurement = state.types.MEStype
     measurement = measurement.lower()
     value = measurement + ".txt"
     if value == "temperature.txt" or value == "time.txt" or value == "force.txt" or value == "speed.txt" or value == "distance.txt" or value == "mass.txt" or value == "pressure.txt":
         state.types.MESfound = True
-        return Page([
+        return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
                     Header("Unit Converter"),
                     "Measurment Found!",
                     Button("Next","Input_Values")
                     ])
     else:
         state.types.MESfound = False
-        return Page([
+        return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
                     Header("Unit Converter"),
                     "We do not have that form of measurement!",
                     Button("Go back","Input_Type")
                     ])
     
 @route
-def Input_Values(state:State):
-    return Page([
+def Input_Values(state:State)-> Page:
+    return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
                 Header("Unit Converter"),
                 "Measurement:",
                 TextBox("input value",state.inputs.INvalue),
@@ -247,16 +247,16 @@ def Input_Values(state:State):
                 ])
 
 @route
-def Found_Input(state:State):
+def Found_Input(state:State)-> Page:
     found = search_for_unit(state.types.MEStype, state.inputs.INunit)
     if found:
-        return Page([
+        return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
                     Header("Unit Converter"),
                     "Input Unit Found! Proceed to Next Step!",
                     Button("Next","Desired_Unit")
                     ])
     else:
-        return Page([
+        return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
                     Header("Unit Converter"),
                     "Input Unit not Found!",
                     Button("Go Back","Input_Values"),
@@ -264,8 +264,8 @@ def Found_Input(state:State):
                     ])
                 
 @route
-def Desired_Unit(state:State):
-    return Page([
+def Desired_Unit(state:State)-> Page:
+    return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
                 Header("Unit Converter"),
                 "Desired Unit:",
                 TextBox("desired unit", state.process.DESunit),
@@ -273,33 +273,33 @@ def Desired_Unit(state:State):
                 ])
 
 @route
-def Found_desire(state:State):
+def Found_desire(state:State)-> Page:
     found = search_for_unit(state.types.MEStype, state.process.DESunit)
     if found:
-        return Page([
+        return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
                     Header("Unit Converter"),
                     "Desired Unit Found! Proceed to Next Step!",
                     Button("Next","Output_Page")
                     ])
     else:
-        return Page([
+        return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
                     Header("Unit Converter"),
                     "Desired Unit not Found!",
                     Button("Go Back","Desired_Unit"),
                     Button("Reset Unit Converter", "Input_Type")
                     ])
 @route
-def Output_Page(state:State):
+def Output_Page(state:State)-> Page:
     Answer = Convert_value(state.inputs.INvalue,state.process.CONfactor,state.types.MEStype, state.inputs.INunit, state.process.DESunit)
     if Answer: 
-        return Page([
+        return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
                     Header("Unit Converter"),
                     "Result",
                     Answer,
                     Button("Reset Unit Converter", "Input_Type")
                     ])
     else:
-        return Page([
+        return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
                     Header("Unit Converter"),
                     "Result Inconclusive, Please try again!",
                     Button("Reset Unit Converter", "Input_Type")
