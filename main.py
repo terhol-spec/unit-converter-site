@@ -1,26 +1,64 @@
-##from bakery import assert_equal
 from drafter import *
 from dataclasses import dataclass
 
-temperature = open("temperature.txt")
+Ftemperature = open("temperature.txt")
+temperature = []
+for t in Ftemperature:
+        t = str(t)
+        t = t.strip()
+        temperature.append(t)
 
+Fforce = open("force.txt")
+force = []
+for f in Fforce:
+        f = str(f)
+        f = f.strip()
+        force.append(f)
 
-force = open("force.txt")
+Fspeed = open("speed.txt")
+speed = []
+for s in Fspeed:
+        s = str(s)
+        s = s.strip()
+        speed.append(s)
 
+Fdistance = open("distance.txt")
+distance = []
+for d in Fdistance:
+        d = str(d)
+        d = d.strip()
+        distance.append(d)
 
-speed = open("speed.txt")
+Fmass = open("mass.txt")
+mass = []
+for m in Fmass:
+        m = str(m)
+        m = m.strip()
+        mass.append(m)
 
+Ftime = open("time.txt")
+time = []
+for t in Ftime:
+        t = str(t)
+        t = t.strip()
+        time.append(t)
 
-distance = open("distance.txt")
+Fpressure = open("pressure.txt")
+pressure = []
+for p in Fpressure:
+        p = str(p)
+        p = p.strip()
+        pressure.append(p)
+        
+        
+Ftemperature.close()
+Fpressure.close()
+Fmass.close()
+Ftime.close()
+Fdistance.close()
+Fspeed.close()
+Fforce.close()
 
-
-mass = open("mass.txt")
-
-
-time = open("time.txt")
-
-
-pressure = open("pressure.txt")
 
 @dataclass
 class Type:
@@ -31,7 +69,7 @@ class Type:
 class In:
     INvalue:int
     INunit:str
-    UNITfound:str
+    UNITfound:bool
     
 @dataclass
 class Processing:
@@ -52,52 +90,45 @@ class State:
 
 def search_temperature(unit:str):
     for temp in temperature:
-        if unit in temp.strip():
+        if unit in str(temp):
             return True
-        else:
-            return False
+    return False
     
 def search_pressure(unit:str):
     for p in pressure:
-        if unit in p.strip():
+        if unit in str(p):
             return True
-        else:
-            return False
+    return False
 
 def search_mass(unit:str):
     for m in mass:
-        if unit in m.strip():
+        if unit in str(m):
             return True
-        else:
-            return False
+    return False
 
 def search_distance(unit:str):
     for d in distance:
-        if unit in d.strip():
+        if unit in str(d):
             return True
-        else:
-            return False
+    return False
 
 def search_speed(unit:str):
     for s in speed:
-        if unit in s.strip():
+        if unit in str(s):
             return True
-        else:
-            return False
+    return False
 
 def search_force(unit:str):
     for f in force:
-        if unit in f.strip():
+        if unit in str(f):
             return True
-        else:
-            return False
+    return False
 
 def search_time(unit:str):
     for t in time:
-        if unit in t.strip():
+        if unit in str(t):
             return True
-        else:
-            return False
+    return False
 
 def search_for_unit(measurement:str, Unit:str):
     if measurement.lower() == "temperature":
@@ -119,74 +150,59 @@ def search_for_unit(measurement:str, Unit:str):
 
 def convert_temperature(value:int,con:int,valUNIT:str,conUNIT:str):
     for temp in temperature:
-        temp = temp.strip()
         temp = temp.split("/")
-        if temp[0] == valUNIT and temp[2] == conUNIT:
-            con = temp[1]
-            value = 0
-            return con + value
-        else:
-            return "Conversion could not be calculated, Retry Unit converter"
+        if temp[0] == valUNIT.lower() and temp[-1] == conUNIT.lower():
+            con = eval(temp[1], {}, {"value": value}) + con
+            return con
+    return "Conversion could not be calculated, Retry Unit converter"
         
-def convert_pressure(val:int,con:int,valUNIT:str,conUNIT:str):
+def convert_pressure(value:int,con:int,valUNIT:str,conUNIT:str):
     for p in pressure:
-        p = p.strip()
         p = p.split("/")
-        if p[0] == valUNIT and p[2] == conUNIT:
-            con = p[1]
-            return val*con
-        else:
-            return "Conversion could not be calculated, Retry Unit converter"
+        if p[0].strip() == valUNIT.lower() and p[-1].strip() == conUNIT.lower():
+            con = float(p[1]) + float(con)
+            return float(value) * con
+    return "Conversion could not be calculated, Retry Unit converter"
 
-def convert_mass(val:int,con:int,valUNIT:str,conUNIT:str):
+def convert_mass(value:int,con:int,valUNIT:str,conUNIT:str):
     for m in mass:
-        m = m.strip()
         m = m.split("/")
-        if m[0] == valUNIT and m[2] == conUNIT:
-            con = m[1]
-            return val*con
-        else:
-            return "Conversion could not be calculated, Retry Unit converter"
+        if m[0].strip() == valUNIT.lower() and m[-1].strip() == conUNIT.lower():
+            con = float(m[1]) + float(con)
+            return float(value) * con
+    return "Conversion could not be calculated, Retry Unit converter"
 
-def convert_speed(val:int,con:int,valUNIT:str,conUNIT:str):
+def convert_speed(value:int,con:int,valUNIT:str,conUNIT:str):
     for s in speed:
-        s = s.strip()
         s = s.split("/")
-        if s[0] == valUNIT and s[2] == conUNIT:
-            con = s[1]
-            return val*con
-        else:
-            return "Conversion could not be calculated, Retry Unit converter"
+        if s[0].strip() == valUNIT.lower() and s[-1].strip() == conUNIT.lower():
+            con = float(s[1]) + float(con)
+            return float(value) * con
+    return "Conversion could not be calculated, Retry Unit converter"
 
-def convert_time(val:int,con:int,valUNIT:str,conUNIT:str):
+def convert_time(value:int,con:int,valUNIT:str,conUNIT:str):
     for t in time:
-        t = t.strip()
         t = t.split("/")
-        if t[0] == valUNIT and t[2] == conUNIT:
-            con = t[1]
-            return val*con
-        else:
-            return "Conversion could not be calculated, Retry Unit converter"
+        if t[0].strip() == valUNIT.lower() and t[-1].strip() == conUNIT.lower():
+            con = float(t[1]) + float(con)
+            return float(value) * con
+    return "Conversion could not be calculated, Retry Unit converter"
 
-def convert_distance(val:int,con:int,valUNIT:str,conUNIT:str):
+def convert_distance(value:int,con:int,valUNIT:str,conUNIT:str):
     for d in distance:
-        d = d.strip()
         d = d.split("/")
-        if d[0] == valUNIT and d[2] == conUNIT:
-            con = d[1]
-            return val*con
-        else:
-            return "Conversion could not be calculated, Retry Unit converter"
+        if d[0].strip() == valUNIT.lower() and d[-1].strip() == conUNIT.lower():
+            con = float(d[1]) + float(con)
+            return float(value) * con
+    return "Conversion could not be calculated, Retry Unit converter"
 
-def convert_force(val:int,con:int,valUNIT:str,conUNIT:str):
+def convert_force(value:int,con:int,valUNIT:str,conUNIT:str):
     for f in force:
-        f = f.strip()
         f = f.split("/")
-        if f[0] == valUNIT and f[2] == conUNIT:
-            con = f[1]
-            return val*con
-        else:
-            return "Conversion could not be calculated, Retry Unit converter"
+        if f[0].strip() == valUNIT.lower() and f[-1].strip() == conUNIT.lower():
+            con = float(f[1]) + float(con)
+            return float(value) * con
+    return "Conversion could not be calculated, Retry Unit converter"
     
 def Convert_value(num1:int,num2:int,measurement:str,unit1:str,unit2:str):
     if measurement.lower() == "temperature":
@@ -205,22 +221,22 @@ def Convert_value(num1:int,num2:int,measurement:str,unit1:str,unit2:str):
         return convert_force(num1,num2,unit1,unit2)
     else:
         return False
-    
-@route
-def Input_Type(state:State)-> Page:
-    return Page((State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)), [
-                Header("Unit Converter"),
-                "Type of Measurement(Temperature, Pressure, Force, Mass, Time, Distance, Speed):",
-                TextBox("input type", state.types.MEStype),
-                Button("Next","Found_type")
-                ]))
 
 @route
-def Found_type(state:State)-> Page:
-    measurement = state.types.MEStype
-    measurement = measurement.lower()
-    value = measurement + ".txt"
-    if value == "temperature.txt" or value == "time.txt" or value == "force.txt" or value == "speed.txt" or value == "distance.txt" or value == "mass.txt" or value == "pressure.txt":
+def index(state:State)-> Page:
+    return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)), [
+                Header("Unit Converter"),
+                "Type of Measurement(Temperature, Force, Distance, Speed, Force, Pressure, Mass):",
+                TextBox("MEStype", state.types.MEStype),
+                Button("Next","Found_type"),
+                ])
+
+@route
+def Found_type(state:State, MEStype:str)-> Page:
+    state.types.MEStype = MEStype
+    value = state.types.MEStype
+    value = value.lower()
+    if value == "temperature" or value == "time" or value == "force" or value == "speed" or value == "distance" or value == "mass" or value == "pressure":
         state.types.MESfound = True
         return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
                     Header("Unit Converter"),
@@ -232,23 +248,28 @@ def Found_type(state:State)-> Page:
         return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
                     Header("Unit Converter"),
                     "We do not have that form of measurement!",
-                    Button("Go back","Input_Type")
+                    Button("back","index"),
+                    Button("End", "end_program")
                     ])
     
 @route
 def Input_Values(state:State)-> Page:
     return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
                 Header("Unit Converter"),
+                state.types.MEStype.upper() + " -",
                 "Measurement:",
-                TextBox("input value",state.inputs.INvalue),
+                TextBox("INvalue",state.inputs.INvalue),
                 "Unit:",
-                TextBox("input unit", state.inputs.INunit),
+                TextBox("INunit", state.inputs.INunit),
                 Button("Next","Found_Input")
                 ])
 
 @route
-def Found_Input(state:State)-> Page:
+def Found_Input(state:State, INvalue:int, INunit:str)-> Page:
+    state.inputs.INunit = INunit
+    state.inputs.INvalue = INvalue
     found = search_for_unit(state.types.MEStype, state.inputs.INunit)
+    state.inputs.UNITfound = found
     if found:
         return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
                     Header("Unit Converter"),
@@ -259,58 +280,57 @@ def Found_Input(state:State)-> Page:
         return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
                     Header("Unit Converter"),
                     "Input Unit not Found!",
-                    Button("Go Back","Input_Values"),
-                    Button("Reset Unit Converter", "Input_Type")
+                    Button("Back","Input_Values"),
+                    Button("Reset", "index"),
+                    Button("End", "end_program")
                     ])
                 
 @route
 def Desired_Unit(state:State)-> Page:
     return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
                 Header("Unit Converter"),
+                state.types.MEStype.upper() + " -",
                 "Desired Unit:",
-                TextBox("desired unit", state.process.DESunit),
-                Button("Next", "Found_Desire")
+                TextBox("desired", state.process.DESunit),
+                Button("Next", "Found_desire")
                 ])
 
 @route
-def Found_desire(state:State)-> Page:
+def Found_desire(state:State, desired:str)-> Page:
+    state.process.DESunit = desired
     found = search_for_unit(state.types.MEStype, state.process.DESunit)
     if found:
         return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
                     Header("Unit Converter"),
                     "Desired Unit Found! Proceed to Next Step!",
-                    Button("Next","Output_Page")
+                    Button("Next","Output_Page"),
                     ])
     else:
         return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
                     Header("Unit Converter"),
                     "Desired Unit not Found!",
-                    Button("Go Back","Desired_Unit"),
-                    Button("Reset Unit Converter", "Input_Type")
+                    Button("Back","Desired_Unit"),
+                    Button("Reset", "index"),
+                    Button("End", "end_program")
                     ])
 @route
 def Output_Page(state:State)-> Page:
-    Answer = Convert_value(state.inputs.INvalue,state.process.CONfactor,state.types.MEStype, state.inputs.INunit, state.process.DESunit)
-    if Answer: 
-        return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
-                    Header("Unit Converter"),
-                    "Result",
-                    Answer,
-                    Button("Reset Unit Converter", "Input_Type")
-                    ])
-    else:
-        return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
-                    Header("Unit Converter"),
-                    "Result Inconclusive, Please try again!",
-                    Button("Reset Unit Converter", "Input_Type")
-                    ])
-    
-temperature.close()
-pressure.close()
-mass.close()
-time.close()
-distance.close()
-speed.close()
-force.close()
+    answer = Convert_value(state.inputs.INvalue,state.process.CONfactor,state.types.MEStype,state.inputs.INunit,state.process.DESunit)
+    state.Output.OUTvalue = answer
+    state.Output.OUTunit = state.process.DESunit 
+    return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
+                Header("Unit Converter"),
+                "Result: ",
+                str(state.Output.OUTvalue) + " " + state.Output.OUTunit.upper() + "S",
+                Button("Reset", "index"),
+                Button("End", "end_program")
+                ])
 
-start_server(State(Type("",False),In(0,"",""),Processing(0,""),Out(0,"")))
+@route
+def end_program(state:State):
+    return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)),[
+                Header("Unit Converter"),
+                "Have a great day!",
+                ])
+
+start_server(State(Type("",False),In(0,"",False),Processing(0,""),Out(0,"")))
