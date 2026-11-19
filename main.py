@@ -1,5 +1,6 @@
 from drafter import *
 from dataclasses import dataclass
+from bakery import assert_equal
 
 Ftemperature = open("temperature.txt")
 temperature = []
@@ -62,101 +63,221 @@ Fforce.close()
 
 @dataclass
 class Type:
+    """Stores the selected measurement category and whether it is valid.
+
+    Attributes:
+        MEStype: The name of the measurement type (e.g., 'temperature', 'mass').
+        MESfound: True if the measurement type is supported, False otherwise.
+    """
     MEStype:str
     MESfound:bool
 
 @dataclass
 class In:
+    """Stores the user's input numerical value, unit, and unit validation status.
+
+    Attributes:
+        INvalue: The numerical measurement value entered by the user.
+        INunit: The unit of measurement associated with the input value.
+        UNITfound: True if the input unit exists in the dataset, False otherwise.
+    """
     INvalue:int
     INunit:str
     UNITfound:bool
     
 @dataclass
 class Processing:
+    """Stores intermediate conversion data and the target unit.
+
+    Attributes:
+        CONfactor: The conversion factor offset or base value used during calculation.
+        DESunit: The desired target unit to convert the input value into.
+    """
     CONfactor:int
     DESunit:str
     
 @dataclass
 class Out:
+    """Stores the final converted measurement value and its unit.
+
+    Attributes:
+        OUTvalue: The resulting numerical value after unit conversion.
+        OUTunit: The unit of the converted output value.
+    """
     OUTvalue:int
     OUTunit:str
     
 @dataclass
 class State:
+    """Represents the overall application state passed between Drafter routes.
+
+    Attributes:
+        types: A Type object holding measurement category details.
+        inputs: An In object holding input value and unit details.
+        process: A Processing object holding conversion factors and target unit.
+        Output: An Out object holding the final converted result.
+    """
     types:Type
     inputs:In
     process:Processing
     Output:Out
 
 def search_temperature(unit:str):
+    """Checks if a given unit exists in the temperature conversions list.
+
+    Args:
+        unit: The unit string to search for.
+
+    Returns:
+        True if the unit is found in the temperature list, False otherwise.
+    """
     for temp in temperature:
         if unit in str(temp):
             return True
     return False
     
 def search_pressure(unit:str):
+    """Checks if a given unit exists in the pressure conversions list.
+
+    Args:
+        unit: The unit string to search for.
+
+    Returns:
+        True if the unit is found in the pressure list, False otherwise.
+    """
     for p in pressure:
         if unit in str(p):
             return True
     return False
 
 def search_mass(unit:str):
+    """Checks if a given unit exists in the mass conversions list.
+
+    Args:
+        unit: The unit string to search for.
+
+    Returns:
+        True if the unit is found in the mass list, False otherwise.
+    """
     for m in mass:
         if unit in str(m):
             return True
     return False
 
 def search_distance(unit:str):
+    """Checks if a given unit exists in the distance conversions list.
+
+    Args:
+        unit: The unit string to search for.
+
+    Returns:
+        True if the unit is found in the distance list, False otherwise.
+    """
     for d in distance:
         if unit in str(d):
             return True
     return False
 
 def search_speed(unit:str):
+    """Checks if a given unit exists in the speed conversions list.
+
+    Args:
+        unit: The unit string to search for.
+
+    Returns:
+        True if the unit is found in the speed list, False otherwise.
+    """
     for s in speed:
         if unit in str(s):
             return True
     return False
 
 def search_force(unit:str):
+    """Checks if a given unit exists in the force conversions list.
+
+    Args:
+        unit: The unit string to search for.
+
+    Returns:
+        True if the unit is found in the force list, False otherwise.
+    """
     for f in force:
         if unit in str(f):
             return True
     return False
 
 def search_time(unit:str):
+    """Checks if a given unit exists in the time conversions list.
+
+    Args:
+        unit: The unit string to search for.
+
+    Returns:
+        True if the unit is found in the time list, False otherwise.
+    """
     for t in time:
         if unit in str(t):
             return True
     return False
 
 def search_for_unit(measurement:str, Unit:str):
+    """Dispatches a unit search to the appropriate measurement search helper.
+
+    Args:
+        measurement: The category of measurement (e.g., 'temperature', 'mass').
+        Unit: The unit name to look up.
+
+    Returns:
+        True if the unit is valid for the given measurement type, False otherwise.
+    """
     if measurement.lower() == "temperature":
-        return search_temperature(Unit)
+        return search_temperature(Unit.lower())
     elif measurement.lower() == "pressure":
-        return search_pressure(Unit)
+        return search_pressure(Unit.lower())
     elif measurement.lower() == "mass":
-        return search_mass(Unit)
+        return search_mass(Unit.lower())
     elif measurement.lower() == "speed":
-        return search_speed(Unit)
+        return search_speed(Unit.lower())
     elif measurement.lower() == "time":
-        return search_time(Unit)
+        return search_time(Unit.lower())
     elif measurement.lower() == "distance":
-        return search_distance(Unit)
+        return search_distance(Unit.lower())
     elif measurement.lower() == "force":
-        return search_force(Unit)
+        return search_force(Unit.lower())
     else:
         return False
 
 def convert_temperature(value:int,con:int,valUNIT:str,conUNIT:str):
+    """Converts a temperature value from one unit to another using formula evaluation.
+
+    Args:
+        value: The input temperature value to convert.
+        con: An additive adjustment to the conversion result.
+        valUNIT: The unit of the input temperature.
+        conUNIT: The target unit for the output temperature.
+
+    Returns:
+        The converted temperature value, or an error string if conversion fails.
+    """
     for temp in temperature:
-        temp = temp.split("/")
+        temp = temp.split(",")
         if temp[0] == valUNIT.lower() and temp[-1] == conUNIT.lower():
             con = eval(temp[1], {}, {"value": value}) + con
             return con
     return "Conversion could not be calculated, Retry Unit converter"
         
 def convert_pressure(value:int,con:int,valUNIT:str,conUNIT:str):
+    """Converts a pressure value from one unit to another using a conversion factor.
+
+    Args:
+        value: The input pressure value to convert.
+        con: An additive adjustment to the conversion factor.
+        valUNIT: The unit of the input pressure.
+        conUNIT: The target unit for the output pressure.
+
+    Returns:
+        The converted pressure value as a float, or an error string if conversion fails.
+    """
     for p in pressure:
         p = p.split("/")
         if p[0].strip() == valUNIT.lower() and p[-1].strip() == conUNIT.lower():
@@ -165,6 +286,17 @@ def convert_pressure(value:int,con:int,valUNIT:str,conUNIT:str):
     return "Conversion could not be calculated, Retry Unit converter"
 
 def convert_mass(value:int,con:int,valUNIT:str,conUNIT:str):
+    """Converts a mass value from one unit to another using a conversion factor.
+
+    Args:
+        value: The input mass value to convert.
+        con: An additive adjustment to the conversion factor.
+        valUNIT: The unit of the input mass.
+        conUNIT: The target unit for the output mass.
+
+    Returns:
+        The converted mass value as a float, or an error string if conversion fails.
+    """
     for m in mass:
         m = m.split("/")
         if m[0].strip() == valUNIT.lower() and m[-1].strip() == conUNIT.lower():
@@ -173,6 +305,17 @@ def convert_mass(value:int,con:int,valUNIT:str,conUNIT:str):
     return "Conversion could not be calculated, Retry Unit converter"
 
 def convert_speed(value:int,con:int,valUNIT:str,conUNIT:str):
+    """Converts a speed value from one unit to another using a conversion factor.
+
+    Args:
+        value: The input speed value to convert.
+        con: An additive adjustment to the conversion factor.
+        valUNIT: The unit of the input speed.
+        conUNIT: The target unit for the output speed.
+
+    Returns:
+        The converted speed value as a float, or an error string if conversion fails.
+    """
     for s in speed:
         s = s.split("/")
         if s[0].strip() == valUNIT.lower() and s[-1].strip() == conUNIT.lower():
@@ -181,6 +324,17 @@ def convert_speed(value:int,con:int,valUNIT:str,conUNIT:str):
     return "Conversion could not be calculated, Retry Unit converter"
 
 def convert_time(value:int,con:int,valUNIT:str,conUNIT:str):
+    """Converts a time value from one unit to another using a conversion factor.
+
+    Args:
+        value: The input time value to convert.
+        con: An additive adjustment to the conversion factor.
+        valUNIT: The unit of the input time.
+        conUNIT: The target unit for the output time.
+
+    Returns:
+        The converted time value as a float, or an error string if conversion fails.
+    """
     for t in time:
         t = t.split("/")
         if t[0].strip() == valUNIT.lower() and t[-1].strip() == conUNIT.lower():
@@ -189,6 +343,17 @@ def convert_time(value:int,con:int,valUNIT:str,conUNIT:str):
     return "Conversion could not be calculated, Retry Unit converter"
 
 def convert_distance(value:int,con:int,valUNIT:str,conUNIT:str):
+    """Converts a distance value from one unit to another using a conversion factor.
+
+    Args:
+        value: The input distance value to convert.
+        con: An additive adjustment to the conversion factor.
+        valUNIT: The unit of the input distance.
+        conUNIT: The target unit for the output distance.
+
+    Returns:
+        The converted distance value as a float, or an error string if conversion fails.
+    """
     for d in distance:
         d = d.split("/")
         if d[0].strip() == valUNIT.lower() and d[-1].strip() == conUNIT.lower():
@@ -197,6 +362,17 @@ def convert_distance(value:int,con:int,valUNIT:str,conUNIT:str):
     return "Conversion could not be calculated, Retry Unit converter"
 
 def convert_force(value:int,con:int,valUNIT:str,conUNIT:str):
+    """Converts a force value from one unit to another using a conversion factor.
+
+    Args:
+        value: The input force value to convert.
+        con: An additive adjustment to the conversion factor.
+        valUNIT: The unit of the input force.
+        conUNIT: The target unit for the output force.
+
+    Returns:
+        The converted force value as a float, or an error string if conversion fails.
+    """
     for f in force:
         f = f.split("/")
         if f[0].strip() == valUNIT.lower() and f[-1].strip() == conUNIT.lower():
@@ -205,6 +381,18 @@ def convert_force(value:int,con:int,valUNIT:str,conUNIT:str):
     return "Conversion could not be calculated, Retry Unit converter"
     
 def Convert_value(num1:int,num2:int,measurement:str,unit1:str,unit2:str):
+    """Dispatches a unit conversion request to the appropriate measurement converter.
+
+    Args:
+        num1: The input value to convert.
+        num2: The conversion factor offset.
+        measurement: The category of measurement (e.g., 'temperature', 'mass').
+        unit1: The input unit.
+        unit2: The target output unit.
+
+    Returns:
+        The converted value, an error message string, or False if the measurement type is invalid.
+    """
     if measurement.lower() == "temperature":
         return convert_temperature(num1,num2,unit1,unit2)
     elif measurement.lower() == "pressure":
@@ -226,7 +414,7 @@ def Convert_value(num1:int,num2:int,measurement:str,unit1:str,unit2:str):
 def index(state:State)-> Page:
     return Page(State(Type(state.types.MEStype, state.types.MESfound),In(state.inputs.INvalue, state.inputs.INunit, state.inputs.UNITfound),Processing(state.process.CONfactor, state.process.DESunit),Out(state.Output.OUTvalue, state.Output.OUTunit)), [
                 Header("Unit Converter"),
-                "Type of Measurement(Temperature, Force, Distance, Speed, Force, Pressure, Mass):",
+                "Type of Measurement (Temperature, Force, Distance, Speed, Force, Pressure, Mass):",
                 TextBox("MEStype", state.types.MEStype),
                 Button("Next","Found_type"),
                 ])
@@ -332,5 +520,57 @@ def end_program(state:State):
                 Header("Unit Converter"),
                 "Have a great day!",
                 ])
+
+# Unit tests for search helper functions
+assert_equal(search_temperature("celsius"), True)
+assert_equal(search_temperature("invalid_unit"), False)
+
+assert_equal(search_pressure("pascal"), True)
+assert_equal(search_pressure("invalid_unit"), False)
+
+assert_equal(search_mass("kilogram"), True)
+assert_equal(search_mass("invalid_unit"), False)
+
+assert_equal(search_distance("meter"), True)
+assert_equal(search_distance("invalid_unit"), False)
+
+assert_equal(search_speed("mile_per_hour"), True)
+assert_equal(search_speed("invalid_unit"), False)
+
+assert_equal(search_force("newton"), True)
+assert_equal(search_force("invalid_unit"), False)
+
+assert_equal(search_time("second"), True)
+assert_equal(search_time("invalid_unit"), False)
+
+assert_equal(search_for_unit("temperature", "Celsius"), True)
+assert_equal(search_for_unit("mass", "Kilogram"), True)
+assert_equal(search_for_unit("unknown_type", "meter"), False)
+
+# Unit tests for conversion helper functions
+assert_equal(convert_temperature(0, 0, "celsius", "fahrenheit"), 32.0)
+assert_equal(convert_temperature(0, 0, "invalid", "fahrenheit"), "Conversion could not be calculated, Retry Unit converter")
+
+assert_equal(convert_pressure(1, 0, "atmosphere", "pascal"), 101325.0)
+assert_equal(convert_pressure(1, 0, "invalid", "pascal"), "Conversion could not be calculated, Retry Unit converter")
+
+assert_equal(convert_mass(1, 0, "kilogram", "gram"), 1000.0)
+assert_equal(convert_mass(1, 0, "invalid", "gram"), "Conversion could not be calculated, Retry Unit converter")
+
+assert_equal(convert_speed(60, 0, "meter_per_second", "kilometer_per_hour"), 216.0)
+assert_equal(convert_speed(60, 0, "invalid", "kph"), "Conversion could not be calculated, Retry Unit converter")
+
+assert_equal(convert_time(1, 0, "minute", "second"), 60.0)
+assert_equal(convert_time(1, 0, "invalid", "second"), "Conversion could not be calculated, Retry Unit converter")
+
+assert_equal(convert_distance(1, 0, "kilometer", "meter"), 1000.0)
+assert_equal(convert_distance(1, 0, "invalid", "meter"), "Conversion could not be calculated, Retry Unit converter")
+
+assert_equal(convert_force(1, 0, "newton", "dyne"), 100000.0)
+assert_equal(convert_force(1, 0, "invalid", "dyne"), "Conversion could not be calculated, Retry Unit converter")
+
+assert_equal(Convert_value(0, 0, "temperature", "celsius", "fahrenheit"), 32.0)
+assert_equal(Convert_value(1, 0, "mass", "kilogram", "gram"), 1000.0)
+assert_equal(Convert_value(1, 0, "unknown_type", "meter", "kilometer"), False)
 
 start_server(State(Type("",False),In(0,"",False),Processing(0,""),Out(0,"")))
